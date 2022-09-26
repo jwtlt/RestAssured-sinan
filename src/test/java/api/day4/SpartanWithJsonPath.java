@@ -29,27 +29,61 @@ public class SpartanWithJsonPath extends SpartanTestBase {
 
     @DisplayName("GET one spartan with JsonPath")
     @Test
-    public void test1(){
+    public void test1() {
         Response response = given().accept(ContentType.JSON)
-                .and().pathParam("id",121)
+                .and().pathParam("id", 121)
                 .when().get("/api/spartans/{id}")
                 .then().statusCode(200)
                 .and().contentType(ContentType.JSON)
                 .extract().response();
 
-        assertEquals(200,response.statusCode());
-        assertEquals("application/json",response.contentType());
+        assertEquals(200, response.statusCode());
+        assertEquals("application/json", response.contentType());
 
         //print name with path method
-        System.out.println(response.path("name").toString());
+        System.out.println(response.prettyPrint());
 
         //assigning response to jsonpath
         JsonPath jsonPath = response.jsonPath();
 
         int id = jsonPath.getInt("id");
         String name = jsonPath.getString("name");
-        String gender =jsonPath.getString("gender");
+        String gender = jsonPath.getString("gender");
         long phone = jsonPath.getLong("phone");
+
+        System.out.println("id = " + id);
+        System.out.println("name = " + name);
+        System.out.println("gender = " + gender);
+        System.out.println("phone = " + phone);
+
+    }
+
+    @DisplayName("Search Request with JsonPath")
+    @Test
+    public void test2() {
+        Response response= given().log().all().
+                accept(ContentType.JSON)
+                .and().queryParam("nameContains","St")
+                .and().queryParam("gender","Female")
+                .when()
+                .get("/api/spartans/search")
+                .then()
+                .extract().response();
+
+
+        assertEquals(200, response.statusCode());
+        assertEquals("application/json", response.contentType());
+
+
+        System.out.println(response.prettyPrint());
+
+        //assigning response to jsonpath
+        JsonPath jsonPath = response.jsonPath();
+
+        int id = jsonPath.getInt("content[0].id");
+        String name = jsonPath.getString("content[0].name");
+        String gender = jsonPath.getString("content[0].gender");
+        long phone = jsonPath.getLong("content[0].phone");
 
         System.out.println("id = " + id);
         System.out.println("name = " + name);
