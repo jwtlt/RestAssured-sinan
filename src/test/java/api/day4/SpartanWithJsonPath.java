@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SpartanWithJsonPath extends SpartanTestBase {
     /*
         Given accept type is json
-        And path param id is 10
+        And path param id is 121
         When user sends a get request to "api/spartans/{id}"
         Then status code is 200
         And content-type is "application/json"
@@ -32,7 +32,10 @@ public class SpartanWithJsonPath extends SpartanTestBase {
     public void test1(){
         Response response = given().accept(ContentType.JSON)
                 .and().pathParam("id",121)
-                .when().get("/api/spartans/{id}");
+                .when().get("/api/spartans/{id}")
+                .then().statusCode(200)
+                .and().contentType(ContentType.JSON)
+                .extract().response();
 
         assertEquals(200,response.statusCode());
         assertEquals("application/json",response.contentType());
